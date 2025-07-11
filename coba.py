@@ -97,3 +97,44 @@ for epoch in range(EPOCHS):
         total_loss += loss.item()
     
     print(f"Epoch {epoch+1}/{EPOCHS}, Loss: {total_loss:.4f}")
+    
+    
+ # Inference: GC-FID → FT-NIR
+def predict_nir_from_gc(gc_input, gc_encoder, nir_decoder):
+    """
+    Predict FT-NIR spectrum from a GC-FID chromatogram.
+    gc_input: 1D numpy array or tensor of shape (GC_DIM,)
+    """
+    gc_input = torch.tensor(gc_input, dtype=torch.float32).unsqueeze(0)
+    with torch.no_grad():
+        latent = gc_encoder(gc_input)
+        predicted_nir = nir_decoder(latent)
+    return predicted_nir.squeeze(0).numpy()
+
+# Inference: FT-NIR → GC-FID
+def predict_gc_from_nir(nir_input, nir_encoder, gc_decoder):
+    """
+    Predict GC-FID chromatogram from an FT-NIR spectrum.
+    nir_input: 1D numpy array or tensor of shape (NIR_DIM,)
+    """
+    nir_input = torch.tensor(nir_input, dtype=torch.float32).unsqueeze(0)
+    with torch.no_grad():
+        latent = nir_encoder(nir_input)
+        predicted_gc = gc_decoder(latent)
+    return predicted_gc.squeeze(0).numpy()
+
+# dry run test
+# Example test input
+# test_gc = gc_data[0]     # input GC chromatogram
+# test_nir = nir_data[0]   # input FT-NIR spectrum
+
+# Predict FT-NIR from GC
+# nir_pred = predict_nir_from_gc(test_gc, gc_encoder, nir_decoder)
+
+# Predict GC-FID from FT-NIR
+# gc_pred = predict_gc_from_nir(test_nir, nir_encoder, gc_decoder)
+
+# Print prediction shapes
+# print("Predicted NIR shape:", nir_pred.shape)
+# print("Predicted GC shape:", gc_pred.shape)
+
