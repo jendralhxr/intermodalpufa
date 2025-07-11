@@ -14,8 +14,32 @@ GC_DIM = 128
 NIR_DIM = 256
 LATENT_DIM = 64
 
+# loader helper
+import pandas as pd
+
+def load_gc_csv(filepath):
+    """
+    Load GC-FID data from a CSV file.
+    Each row should be a sample; each column is a retention time bin.
+    Returns: np.ndarray of shape (n_samples, n_features)
+    """
+    df = pd.read_csv(filepath)
+    return df.values.astype(np.float32)
+
+def load_nir_csv(filepath):
+    """
+    Load FT-NIR data from a CSV file.
+    Each row should be a sample; each column is a wavelength bin.
+    Returns: np.ndarray of shape (n_samples, n_features)
+    """
+    df = pd.read_csv(filepath)
+    return df.values.astype(np.float32)
+
+ 
+
+
 # Dummy data: each row is a sample
-gc_data = np.random.rand(N_SAMPLES, GC_DIM).astype(np.float32)
+gc_data = np.random.rand(N_SAMPLES, GC_DIM).astype(n.float32)
 nir_data = np.random.rand(N_SAMPLES, NIR_DIM).astype(np.float32)
 
 # Dataset
